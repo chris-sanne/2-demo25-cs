@@ -14,6 +14,7 @@ const quotes = [
 
 server.set('port', port);
 server.use(express.static('public'));
+server.use(express.json());
 
 function randomPoem() {
     const index = Math.floor(Math.random() * quotes.length);
@@ -35,6 +36,19 @@ function getQuote(req, res, next) {
 server.get("/", getRoot);
 server.get("/tmp/poem", getPoem);
 server.get("/tmp/quote", getQuote);
+server.post("/tmp/sum/:a/:b", (req, res, next) => {
+    const a = parseInt(req.params.a);
+    const b = parseInt(req.params.b);
+    const sum = a + b;
+    res.status(HTTP_CODES.SUCCESS.OK).json({ sum }).end();
+});
+
+/* server.get("/tmp/sum/:a/:b", (req, res, next) => {
+    const a = parseInt(req.params.a);
+    const b = parseInt(req.params.b);
+    const sum = a + b;
+    res.status(HTTP_CODES.SUCCESS.OK).send({ sum }).end();
+}); */
 
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
