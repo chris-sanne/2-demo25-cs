@@ -60,9 +60,10 @@ server.get("/", getRoot);
 
 server.post("/temp/deck", (req, res, next) => {
     const deck_id = generateDeckId();
-    const myDeck = {...cardDeck};
+    const myDeck = JSON.parse(JSON.stringify(cardDeck));
+
     decks[deck_id] = myDeck;
-    console.log(`Deck generated with ID: ${deck_id}`);
+    console.log(`New deck generated with ID: ${deck_id}`);
     console.log(decks[deck_id]);
 
     res.status(HTTP_CODES.SUCCESS.OK).send().end();
@@ -88,14 +89,37 @@ server.patch("/temp/deck/shuffle/:deck_id", (req, res, next) => {
 server.get("/temp/deck/:deck_id", (req, res, next) => {
     const deck_id = req.params.deck_id;
 
-    if (decks[deck_id]) {
-        console.log(`Deck with ID: ${deck_id} retrieved`);
-        console.log(decks[deck_id]);
-        
-        res.status(HTTP_CODES.SUCCESS.OK).json(decks[deck_id]).end();
-    } else {
-        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send("No deck found").end();
+    if (!decks[deck_id]) {
+        return res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send("No deck found").end();
     }
+    
+    console.log(`Deck with ID: ${deck_id} retrieved`);
+    console.log(decks[deck_id]);
+    res.status(HTTP_CODES.SUCCESS.OK).json(decks[deck_id]).end();
+});
+
+server.get("/temp/deck/:deck_id/card", (req, res, next) => {
+    const deck_id = req.params.deck_id;
+
+    if (!decks[deck_id]) {
+        return res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send("No deck found").end();
+    }
+
+    const deck = decks[deck_id];
+    const suits = Object.keys(deck);
+
+    const randomSuitIndex = Math.floor(Math.random() * suits.length);
+    const suit = suits[randomSuitIndex];
+
+    if (deck[suit].length === 0) {
+        return res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send(`No cards left in the suit: ${suit}`).end();
+    }
+
+    const randomCardIndex = Math.floor(Math.random() * deck[suit].length);
+    const card = deck[suit].splice(randomCardIndex, 1) [0];
+
+    console.log(`Card ${card} of suit ${suit} drawn from deck with ID: ${deck_id}`);
+    res.status(HTTP_CODES.SUCCESS.OK).json({ suit, card }).end();
 });
 
 server.listen(server.get('port'), function () {
