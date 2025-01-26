@@ -15,11 +15,6 @@ const decks = {};
 
 server.set('port', port);
 server.use(express.static('public'));
-//server.use(express.json()); no need?
-
-function getRoot(req, res, next) {
-    res.status(HTTP_CODES.SUCCESS.OK).send('Hello World').end();
-}
 
 function generateDeckId() {
     let deck_id = "";
@@ -29,15 +24,14 @@ function generateDeckId() {
         const randomChar = Math.floor(Math.random() * chars.length);
         deck_id += chars[randomChar];
     }
-    console.log("Deck ID generated. Returning to server.post call . . .");
     return deck_id;
 }
 
-function generateDeck() {
+/* function generateDeck() {
     fetch("/temp/deck")
         .then(response => response.json())
         .then(cardDeck => console.log(cardDeck));
-}
+} */
 
 function shuffleDeck(deck) {
     const shuffledDeck = {};
@@ -56,8 +50,6 @@ function shuffleDeck(deck) {
     return shuffledDeck;
 }
 
-server.get("/", getRoot);
-
 server.post("/temp/deck", (req, res, next) => {
     const deck_id = generateDeckId();
     const myDeck = JSON.parse(JSON.stringify(cardDeck));
@@ -66,7 +58,7 @@ server.post("/temp/deck", (req, res, next) => {
     console.log(`New deck generated with ID: ${deck_id}`);
     console.log(decks[deck_id]);
 
-    res.status(HTTP_CODES.SUCCESS.OK).send().end();
+    res.status(HTTP_CODES.SUCCESS.OK).json({ deck_id }).end();
 });
 
 server.patch("/temp/deck/shuffle/:deck_id", (req, res, next) => {
@@ -84,7 +76,7 @@ server.patch("/temp/deck/shuffle/:deck_id", (req, res, next) => {
     console.log(decks[deck_id]);
 
     res.status(HTTP_CODES.SUCCESS.OK).json(shuffledDeck).end();
-})
+});
 
 server.get("/temp/deck/:deck_id", (req, res, next) => {
     const deck_id = req.params.deck_id;

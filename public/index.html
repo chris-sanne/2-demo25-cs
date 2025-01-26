@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card deck</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>This is my card deck website</h1>
+    <button id="btnNewDeck">Generate new deck</button>
+    
+    <form action="/temp/deck/:deck_id" method="GET">
+        <input type="text" id="inputSearch" name="query" placeholder="Enter deck ID..." required />
+        <button type="submit" id="btnShowDeck">Show deck</button>
+        <button type="submit" id="btnShuffleDeck">Shuffle deck</button>
+        <button id="btnDrawCard">Draw card</button>
+    </form>
+
+    <div id="cardOutput">
+        <p>Card drawn:  <img id="cardImage" src="" alt="Card Image" style="width: 150px; height: auto;" /></p>
+    </div>
+
+    <script src="js/cardApp.mjs"></script>
+
+</body>
+</html>
