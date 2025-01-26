@@ -7,18 +7,23 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>This is my card deck website</h1>
-    <button id="btnNewDeck">Generate new deck</button>
+    <div id="allContentWrapper">
+        <div id="newDeckWrapper">
+            <button id="btnNewDeck">Generate new deck</button>
+            <div id="messageBox" class="hidden"></div>
+        </div>
+        
+        <form id="inputForm" action="/temp/deck/:deck_id" method="GET">
+            <input type="text" id="inputSearch" name="query" placeholder="Enter deck ID..." required />
+            <button type="submit" id="btnShowDeck">Show this deck in the console log</button>
+            <button type="submit" id="btnShuffleDeck">Shuffle this deck</button>
+            <button id="btnDrawCard">Draw a card from this deck</button>
+        </form>
     
-    <form action="/temp/deck/:deck_id" method="GET">
-        <input type="text" id="inputSearch" name="query" placeholder="Enter deck ID..." required />
-        <button type="submit" id="btnShowDeck">Show deck</button>
-        <button type="submit" id="btnShuffleDeck">Shuffle deck</button>
-        <button id="btnDrawCard">Draw card</button>
-    </form>
-
-    <div id="cardOutput">
-        <p>Card drawn:  <img id="cardImage" src="" alt="Card Image" style="width: 150px; height: auto;" /></p>
+        <div id="cardOutput">
+            <h3>Card Drawn:</h3>
+            <img id="cardImage" src="https://i.gyazo.com/fa36c64a895318817319fff5fe478e89.png" alt="Card Image" style="width: 150px; height: auto;" />
+        </div>
     </div>
 
     <script src="js/cardApp.mjs"></script>

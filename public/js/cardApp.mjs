@@ -6,6 +6,7 @@ const btnShowDeck = document.getElementById("btnShowDeck");
 const btnShuffleDeck = document.getElementById("btnShuffleDeck");
 const btnDrawCard = document.getElementById("btnDrawCard");
 const cardImage = document.getElementById("cardImage");
+let amountOfDecks = 0;
         
 btnNewDeck.addEventListener("click", () => {
     fetch("/temp/deck", {method: "POST",
@@ -18,10 +19,17 @@ btnNewDeck.addEventListener("click", () => {
     }).then((data) => {
         const deck_id = data.deck_id;
         console.log("New deck created with ID: ", deck_id);
-        alert("New deck created successfully! Check your server logs for the deck ID.");
+        showMessage(`New deck created with ID: ${deck_id}`, "success");
+        amountOfDecks++;
+        if (amountOfDecks === 1) {
+            console.log(`You have ${amountOfDecks} deck.`);
+        } else {
+            console.log(`You have ${amountOfDecks} decks.`);
+        }
     }).catch((error) => {
         console.log(error);
-        alert("Failed to generate a new deck. Please try again.");
+        alert("Failed to generate a new deck. Please try again.", "error");
+        showMessage("Failed to generate a new deck. Please try again.", "error");
     });
 });
 
@@ -29,8 +37,11 @@ btnShowDeck.addEventListener("click", (event) => {
     event.preventDefault();
 
     const deck_id = inputSearch.value;
-    if (!deck_id) {
-        alert("Please enter a valid deck ID.");
+
+    if (amountOfDecks <1) {
+        showMessage(`You have no decks. Generate a deck first.`, "error");
+    } else if (!deck_id) {
+        showMessage(`Please enter a valid deck ID.`, "error");
         return;
     }
 
@@ -42,20 +53,21 @@ btnShowDeck.addEventListener("click", (event) => {
             return response.json();
         }).then((deck) => {
             console.log(`Deck with ID ${deck_id}:`, deck);
-            alert(`Deck loaded! Check the console for details.`);
-            renderDeck(deck, deck_id); //Remove later
+            showMessage(`Deck loaded with ID: ${deck_id}`, "success");
 
         }).catch((error) => {
             console.error(error);
-            alert(`Error: ${error.message}`);
+            //I found these to be annoying: alert(`Error: ${error.message}`);
         });
 });
 
 btnShuffleDeck.addEventListener("click", (event) => {
     event.preventDefault();
     const deck_id = inputSearch.value; 
-    if (!deck_id) {
-        alert("Please enter a valid deck ID.");
+    if (amountOfDecks <1) {
+        showMessage(`You have no decks. Generate a deck first.`, "error");
+    } else if (!deck_id) {
+        showMessage(`Please enter a valid deck ID.`, "error");
         return;
     }
 
@@ -70,19 +82,23 @@ btnShuffleDeck.addEventListener("click", (event) => {
     })
     .then(shuffledDeck => {
         console.log("Deck shuffled: ", shuffledDeck);
-        alert("Deck shuffled!");
+        showMessage(`Deck shuffled!`, "success");
+        //I found these to be annoying: alert("Deck shuffled!");
     })
     .catch(error => {
         console.error("Error shuffling deck: ", error);
-        alert("Error shuffling deck!");
+        //I found these to be annoying: alert("Error shuffling deck!");
     });
 });
 
 btnDrawCard.addEventListener("click", (event) => {
     event.preventDefault();
     const deck_id = inputSearch.value;
-    if (!deck_id) {
-        alert("Please enter a valid deck ID.");
+
+    if (amountOfDecks <1) {
+        showMessage(`You have no decks. Generate a deck first.`, "error");
+    } else if (!deck_id) {
+        showMessage(`Please enter a valid deck ID.`, "error");
         return;
     }
 
@@ -132,23 +148,23 @@ btnDrawCard.addEventListener("click", (event) => {
     })
     .catch(error => {
         console.error("Error drawing card: ", error);
-        alert("Error drawing card!");
+        //I found these to be annoying: alert("Error drawing card!"); 
     });
 });
 
-// Either tidy up with css or remove altogether later
-function renderDeck(deck, deck_id) {
-    const output = document.createElement("div");
-    output.id = "deckOutput";
-    output.innerHTML = `
-        <h2>Deck ID: ${deck_id}</h2>
-        <pre>${JSON.stringify(deck, null, 2)}</pre>
-    `;
+function showMessage(message, type = "success") {
+    const messageBox = document.getElementById("messageBox");
+    messageBox.textContent = message;
+    messageBox.className = "";
+    messageBox.classList.add(type);
+    messageBox.style.display = "block";
+    messageBox.style.opacity = 1;
 
-    const existingOutput = document.getElementById("deckOutput");
-    if (existingOutput) {
-        existingOutput.remove();
-    }
-
-    document.body.appendChild(output);
-};
+    setTimeout(() => {
+        messageBox.style.transition = "opacity 1.5s";
+        messageBox.style.opacity = "0";
+        setTimeout(() => {
+            messageBox.style.display = "none";
+        }, 2000);
+    }, 5000);
+}
