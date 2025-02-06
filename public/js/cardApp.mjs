@@ -1,5 +1,31 @@
 "use strict";
 
+let darkmode = localStorage.getItem("darkmode");
+const btnToggleTheme = document.getElementById("btnToggleTheme");
+const enableDarkmode = () => {
+    document.body.classList.add("darkmode");
+    localStorage.setItem("darkmode", "active");
+}
+
+const disableDarkmode = () => {
+    document.body.classList.remove("darkmode");
+    localStorage.setItem("darkmode", null);
+};
+
+if (darkmode === "active") {
+    enableDarkmode();
+}
+
+btnToggleTheme.addEventListener("click", ()  => {
+    darkmode = localStorage.getItem("darkmode");
+    
+    if (darkmode !== "active") {
+        enableDarkmode();
+    } else {
+        disableDarkmode();
+    }
+});
+
 const btnNewDeck = document.getElementById("btnNewDeck");
 const inputSearch = document.getElementById("inputSearch");
 const btnShowDeck = document.getElementById("btnShowDeck");
