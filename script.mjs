@@ -27,12 +27,6 @@ function generateDeckId() {
     return deck_id;
 }
 
-/* function generateDeck() {
-    fetch("/temp/deck")
-        .then(response => response.json())
-        .then(cardDeck => console.log(cardDeck));
-} */
-
 function shuffleDeck(deck) {
     const shuffledDeck = {};
 

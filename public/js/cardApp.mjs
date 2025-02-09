@@ -83,7 +83,6 @@ btnShowDeck.addEventListener("click", (event) => {
 
         }).catch((error) => {
             console.error(error);
-            //I found these to be annoying: alert(`Error: ${error.message}`);
         });
 });
 
@@ -109,11 +108,9 @@ btnShuffleDeck.addEventListener("click", (event) => {
     .then(shuffledDeck => {
         console.log("Deck shuffled: ", shuffledDeck);
         showMessage(`Deck shuffled!`, "success");
-        //I found these to be annoying: alert("Deck shuffled!");
     })
     .catch(error => {
         console.error("Error shuffling deck: ", error);
-        //I found these to be annoying: alert("Error shuffling deck!");
     });
 });
 
@@ -174,7 +171,6 @@ btnDrawCard.addEventListener("click", (event) => {
     })
     .catch(error => {
         console.error("Error drawing card: ", error);
-        //I found these to be annoying: alert("Error drawing card!"); 
     });
 });
 
