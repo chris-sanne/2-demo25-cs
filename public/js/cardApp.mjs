@@ -1,30 +1,68 @@
 "use strict";
 
-let darkmode = localStorage.getItem("darkmode");
 const btnToggleTheme = document.getElementById("btnToggleTheme");
-const enableDarkmode = () => {
-    document.body.classList.add("darkmode");
-    localStorage.setItem("darkmode", "active");
-}
 
-const disableDarkmode = () => {
-    document.body.classList.remove("darkmode");
-    localStorage.setItem("darkmode", null);
-};
-
-if (darkmode === "active") {
-    enableDarkmode();
-}
-
-btnToggleTheme.addEventListener("click", ()  => {
-    darkmode = localStorage.getItem("darkmode");
-    
-    if (darkmode !== "active") {
-        enableDarkmode();
-    } else {
-        disableDarkmode();
+async function loadSettings() {
+    try {
+        const response = await fetch("/settings");
+        const settings = await response.json();
+        return settings;
+    } catch (error) {
+        console.error("Error loading settings:", error);
+        return { theme: "light" };
     }
-});
+}
+
+async function saveSettings(settings) {
+    try {
+        const response = await fetch("/settings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(settings),
+        });
+
+        if (!response.ok) {
+            throw new Error("Error saving settings");
+        }
+    } catch (error) {
+        console.error("Error saving settings: ", error);
+    }
+}
+
+async function applyTheme(theme) {
+    if (theme === "dark") {
+        document.body.classList.add("darkmode");
+    } else {
+        document.body.classList.remove("darkmode");
+    }
+}
+
+async function toggleTheme() {
+    try {
+        const settings = await loadSettings();
+        const newTheme = settings.theme === "dark" ? "light" : "dark";
+
+        const newSettings = { theme: newTheme };
+        await saveSettings(newSettings);
+
+        await applyTheme(newTheme);
+    } catch (error) {
+        console.error("Error toggling theme: ", error);
+    }
+}
+
+btnToggleTheme.addEventListener("click", toggleTheme);
+
+async function startup() {
+    try {
+        const settings = await loadSettings();
+        await applyTheme(settings.theme);
+    } catch (error) {
+        console.error("Error starting theme: ", error);
+    }
+}
+
+startup();
 
 const btnNewDeck = document.getElementById("btnNewDeck");
 const inputSearch = document.getElementById("inputSearch");

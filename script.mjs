@@ -1,5 +1,6 @@
 import express from 'express'
 import HTTP_CODES from './utils/httpCodes.mjs';
+import fs from "node:fs/promises";
 
 const server = express();
 const port = (process.env.PORT || 8000);
@@ -12,9 +13,32 @@ const cardDeck = {
 }
 
 const decks = {};
+const settingsFile = "./settings/settings.json";
 
 server.set('port', port);
 server.use(express.static('public'));
+
+server.get("/settings", async (req, res, next) => {
+    try {
+        const data = await fs.readFile(settingsFile);
+        res.json(JSON.parse(data));
+    } catch (error) {
+        console.error("Error loading settings: ", error);
+        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send("No settings found").end();
+    }
+});
+
+server.post("/settings", express.json(), async (req, res, next) => {
+    try {
+        const settings = req.body;
+        const data = JSON.stringify(settings);
+        await fs.writeFile(settingsFile, data);
+        res.status(HTTP_CODES.SUCCESS.OK).send("Settings saved").end();
+    } catch (error) {
+        console.error("Error saving settings: ", error);
+        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send("Error saving settings");
+    }
+});
 
 function generateDeckId() {
     let deck_id = "";
