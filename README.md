@@ -1,1 +1,1 @@
-I regret making this README. Task 3 done :)
+Jeg har tilbringet vinterferien i USA, og dermed ikke hatt mulighet til å jobbe med oblig uke 8. Grunnet dette blir den levert noe på etterskudd.
