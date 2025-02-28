@@ -1,7 +1,7 @@
 import express from 'express'
 import HTTP_CODES from './utils/httpCodes.mjs';
 import fs from "node:fs/promises";
-import { createSkillTree } from "./public/js/skillTreeManager.mjs";
+import { createSkillTree, updateSkill } from "./public/js/skillTreeManager.mjs";
 
 const server = express();
 const port = (process.env.PORT || 8000);
@@ -134,6 +134,7 @@ server.get("/temp/deck/:deck_id/card", (req, res, next) => {
 });
 
 server.post("/skill-tree", createSkillTree);
+server.patch("/skill-tree/:skillName", updateSkill);
 
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
