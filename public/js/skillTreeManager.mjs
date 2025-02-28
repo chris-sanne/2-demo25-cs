@@ -10,3 +10,29 @@ export function createSkillTree(req, res, next) {
 
     res.status(HTTP_CODES.SUCCESS.OK).json(newSkillTree);
 }
+
+function findSkill(skillName) {
+    const stack = [...skillTree.subskills];
+
+    while (stack.length > 0) {
+        const skill = stack.pop();
+        if (skill.name === skillName) {
+            return skill;
+        }
+        stack.push(...skill.subskills);
+    }
+}
+
+export function updateSkill(req, res, next) {
+    const skillName = req.params.skillName;
+
+    const skill = findSkill(skillName);
+    
+    if (skill) {
+        skill.unlocked = !skill.unlocked;
+        res.status(HTTP_CODES.SUCCESS.OK).json(`${skill.name} unlocked: ${skill.unlocked}`);
+        console.log(skillTree);
+    } else {
+        res.status(404).send("Skill not found, check typing");
+    }
+}
