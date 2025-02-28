@@ -42,3 +42,15 @@ const skillTree = {
 };
 
 console.log(skillTree);
+
+function showSkillTree(skill, parentElement) {
+  const listItem = document.createElement("li");
+  listItem.innerText = skill.name + (skill.unlocked ? " ✅ " : " ❌ ");
+  parentElement.appendChild(listItem);
+  
+  const unorderedList = document.createElement("ul");
+  listItem.appendChild(unorderedList);
+  skill.subskills.forEach(subskill => showSkillTree(subskill, unorderedList));
+}
+
+showSkillTree(skillTree, skillTreeElement);
