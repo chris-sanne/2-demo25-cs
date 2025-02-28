@@ -1,6 +1,7 @@
 import express from 'express'
 import HTTP_CODES from './utils/httpCodes.mjs';
 import fs from "node:fs/promises";
+import { getSkillTree } from "./public/js/skillTreeManager.mjs";
 
 const server = express();
 const port = (process.env.PORT || 8000);
@@ -131,6 +132,8 @@ server.get("/temp/deck/:deck_id/card", (req, res, next) => {
     console.log(`Card ${card} of suit ${suit} drawn from deck with ID: ${deck_id}`);
     res.status(HTTP_CODES.SUCCESS.OK).json({ suit, card }).end();
 });
+
+server.get("/skill-tree", getSkillTree);
 
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
