@@ -1,8 +1,8 @@
 "use strict";
 
-const skillTreeElement = document.getElementById("skillTreeElement");
+//const skillTreeElement = document.getElementById("skillTreeElement");
 
-const skillTree = {
+export const skillTree = {
   name: "Swiftcast",
   unlocked: true,
   subskills: [
@@ -41,7 +41,7 @@ const skillTree = {
   ]
 };
 
-console.log(skillTree);
+/* console.log(skillTree);
 
 function showSkillTree(skill, parentElement) {
   const listItem = document.createElement("li");
@@ -56,4 +56,4 @@ function showSkillTree(skill, parentElement) {
   }
 }
 
-showSkillTree(skillTree, skillTreeElement);
+showSkillTree(skillTree, skillTreeElement); */
