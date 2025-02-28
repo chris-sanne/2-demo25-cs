@@ -1,15 +1,12 @@
 import fs from "node:fs/promises";
 import HTTP_CODES from "../../utils/httpCodes.mjs";
+import { skillTree } from "../js/skillTree.mjs";
 
-const skillTreeFile = "./data/skillTree.json";
+export function createSkillTree(req, res, next) {
+    const newSkillTree = JSON.parse(JSON.stringify(skillTree));
 
-export async function getSkillTree(req, res, next) {
-    try {
-        const data = await fs.readFile(skillTreeFile);
-        console.log(JSON.parse(data));
-        res.status(HTTP_CODES.SUCCESS.OK).json(JSON.parse(data)).end();
-    } catch (error) {
-        console.log(`Error loading skill tree: ${error}`);
-        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send(`Error displaying skill tree`).end();
-    }
-};
+    console.log("New skill tree generated:");
+    console.log(newSkillTree);
+
+    res.status(HTTP_CODES.SUCCESS.OK).json(newSkillTree);
+}
