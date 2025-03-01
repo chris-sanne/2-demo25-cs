@@ -34,9 +34,35 @@ export function updateSkill(req, res, next) {
     
     if (skill) {
         skill.unlocked = !skill.unlocked;
-        res.status(HTTP_CODES.SUCCESS.OK).json(`${skill.name} unlocked: ${skill.unlocked}`);
+        res.status(HTTP_CODES.SUCCESS.OK).send(`${skill.name} unlocked: ${skill.unlocked}`);
         console.log(skillTree);
     } else {
-        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send("Skill not found, check typing");
+        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send(`Skill '${skillName}' not found, check spelling`);
     }
+}
+
+export function deleteSkill(req, res, next) {
+    const skillName = req.params.skillName;
+    const skillsArray = [];
+    skillsArray.push(skillTree);
+
+    function skillNameMatcher(subskill) {
+        if (subskill.name === skillName) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    while (skillsArray.length > 0) {
+        const skill = skillsArray.pop();
+        const index = skill.subskills.findIndex(skillNameMatcher);
+
+        if (index !== -1) {
+            skill.subskills.splice(index, 1);
+            return res.status(HTTP_CODES.SUCCESS.OK).json(`Deleted skill: ${skillName}`);
+        }
+        skillsArray.push(...skill.subskills);
+    }
+    return res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).json(`Skill: '${skillName}' not found, check spelling`);
 }
