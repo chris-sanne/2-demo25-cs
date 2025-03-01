@@ -11,6 +11,11 @@ export function createSkillTree(req, res, next) {
     res.status(HTTP_CODES.SUCCESS.OK).json(newSkillTree);
 }
 
+export function getSkillTree(req, res, next) {
+    console.log("My skill tree: ", skillTree);
+    res.json(skillTree);
+}
+
 function findSkill(skillName) {
     const stack = [...skillTree.subskills];
 
@@ -25,7 +30,6 @@ function findSkill(skillName) {
 
 export function updateSkill(req, res, next) {
     const skillName = req.params.skillName;
-
     const skill = findSkill(skillName);
     
     if (skill) {
@@ -33,6 +37,6 @@ export function updateSkill(req, res, next) {
         res.status(HTTP_CODES.SUCCESS.OK).json(`${skill.name} unlocked: ${skill.unlocked}`);
         console.log(skillTree);
     } else {
-        res.status(404).send("Skill not found, check typing");
+        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send("Skill not found, check typing");
     }
 }
