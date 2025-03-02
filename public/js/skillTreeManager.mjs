@@ -2,22 +2,22 @@ import fs from "node:fs/promises";
 import HTTP_CODES from "../../utils/httpCodes.mjs";
 import { skillTree } from "../js/skillTree.mjs";
 
+let activeSkillTree = JSON.parse(JSON.stringify(skillTree));
+
 export function createSkillTree(req, res, next) {
-    const newSkillTree = JSON.parse(JSON.stringify(skillTree));
-
+    activeSkillTree = JSON.parse(JSON.stringify(skillTree));
     console.log("New skill tree generated:");
-    console.log(newSkillTree);
-
-    res.status(HTTP_CODES.SUCCESS.OK).json(newSkillTree);
+    console.log(activeSkillTree);
+    res.status(HTTP_CODES.SUCCESS.OK).json(activeSkillTree);
 }
 
 export function getSkillTree(req, res, next) {
-    console.log("My skill tree: ", skillTree);
-    res.json(skillTree);
+    console.log("My skill tree: ", activeSkillTree);
+    res.json(activeSkillTree);
 }
 
 function findSkill(skillName) {
-    const stack = [...skillTree.subskills];
+    const stack = [...activeSkillTree.subskills];
 
     while (stack.length > 0) {
         const skill = stack.pop();
@@ -35,7 +35,8 @@ export function updateSkill(req, res, next) {
     if (skill) {
         skill.unlocked = !skill.unlocked;
         res.status(HTTP_CODES.SUCCESS.OK).send(`${skill.name} unlocked: ${skill.unlocked}`);
-        console.log(skillTree);
+        console.log(`${skillName} unlocked: ${skill.unlocked}`);
+        console.log(activeSkillTree);
     } else {
         res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send(`Skill '${skillName}' not found, check spelling`);
     }
@@ -44,7 +45,7 @@ export function updateSkill(req, res, next) {
 export function deleteSkill(req, res, next) {
     const skillName = req.params.skillName;
     const skillsArray = [];
-    skillsArray.push(skillTree);
+    skillsArray.push(activeSkillTree);
 
     function skillNameMatcher(subskill) {
         if (subskill.name === skillName) {
