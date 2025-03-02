@@ -17,6 +17,9 @@ const decks = {};
 const settingsFile = "./settings/settings.json";
 
 server.set('port', port);
+server.get("/", (req, res, next) => {
+    res.redirect("/skill-tree");
+});
 server.use(express.static('public'));
 
 server.get("/settings", async (req, res, next) => {
