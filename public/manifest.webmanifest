@@ -1,0 +1,20 @@
+{
+    "name": "Skill Tree app",
+    "short_name": "stapp",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f0f0f0",
+    "theme_color": "#333333",
+    "icons": [
+        {
+            "src": "icons/skillTree.png",
+            "type": "image/png",
+            "sizes": "128x128"
+        },
+        {
+            "src": "icons/skillTreeLarge.png",
+            "type": "image/png",
+            "size": "512x512"
+        }
+    ]
+}
