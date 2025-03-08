@@ -1,6 +1,45 @@
 import fs from "node:fs/promises";
 import HTTP_CODES from "../../utils/httpCodes.mjs";
-import { skillTree } from "../js/skillTree.mjs";
+/* import { skillTree } from "../js/skillTree.mjs"; */
+
+const skillTree = {
+  name: "Swiftcast",
+  unlocked: true,
+  subskills: [
+    {
+      name: "Fireball",
+      unlocked: false,
+      subskills: [
+        {
+          name: "Greater Fireball",
+          unlocked: false,
+          subskills: []
+        },
+        {
+          name: "Firestorm",
+          unlocked: false,
+          subskills: []
+        }
+      ]
+    },
+    {
+      name: "Cure",
+      unlocked: false,
+      subskills: [
+        {
+          name: "Cure II",
+          unlocked: false,
+          subskills: []
+        },
+        {
+          name: "Regen",
+          unlocked: false,
+          subskills: []
+        }
+      ]
+    }
+  ]
+};
 
 let activeSkillTree = JSON.parse(JSON.stringify(skillTree));
 
@@ -8,12 +47,12 @@ export function createSkillTree(req, res, next) {
     activeSkillTree = JSON.parse(JSON.stringify(skillTree));
     console.log("New skill tree generated:");
     console.log(activeSkillTree);
-    res.status(HTTP_CODES.SUCCESS.OK).json(activeSkillTree);
+    res.status(HTTP_CODES.SUCCESS.OK).json(activeSkillTree).end();
 }
 
 export function getSkillTree(req, res, next) {
     console.log("My skill tree: ", activeSkillTree);
-    res.json(activeSkillTree);
+    res.status(HTTP_CODES.SUCCESS.OK).json(activeSkillTree).end();
 }
 
 function findSkill(skillName) {
@@ -34,11 +73,11 @@ export function updateSkill(req, res, next) {
     
     if (skill) {
         skill.unlocked = !skill.unlocked;
-        res.status(HTTP_CODES.SUCCESS.OK).send(`${skill.name} unlocked: ${skill.unlocked}`);
+        res.status(HTTP_CODES.SUCCESS.OK).json(`${skill.name} unlocked: ${skill.unlocked}`);
         console.log(`${skillName} unlocked: ${skill.unlocked}`);
         console.log(activeSkillTree);
     } else {
-        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).send(`Skill '${skillName}' not found, check spelling`);
+        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).json(`Skill '${skillName}' not found, check spelling`);
     }
 }
 
