@@ -6,7 +6,18 @@ import { createSkillTree, updateSkill, getSkillTree, deleteSkill } from "./publi
 const server = express();
 const port = (process.env.PORT || 8000);
 
-const cardDeck = {
+server.set('port', port);
+server.use(express.static('public'));
+
+server.post("/", createSkillTree);
+server.get("/api/skill-tree", getSkillTree);
+server.patch("/api/skill-tree/:skillName", updateSkill);
+server.delete("/api/skill-tree/:skillName", deleteSkill);
+
+server.listen(server.get('port'), function () {
+    console.log('server running', server.get('port'));
+});
+/* const cardDeck = {
     "Clubs": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
     "Diamonds": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
     "Hearts": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
@@ -14,15 +25,15 @@ const cardDeck = {
 }
 
 const decks = {};
-const settingsFile = "./settings/settings.json";
+const settingsFile = "./settings/settings.json"; */
 
-server.set('port', port);
-server.get("/", (req, res, next) => {
+
+/* server.get("/", (req, res, next) => {
     res.redirect("/skill-tree");
-});
-server.use(express.static('public'));
+}); */
 
-server.get("/settings", async (req, res, next) => {
+
+/* server.get("/settings", async (req, res, next) => {
     try {
         const data = await fs.readFile(settingsFile);
         res.json(JSON.parse(data));
@@ -134,13 +145,5 @@ server.get("/temp/deck/:deck_id/card", (req, res, next) => {
 
     console.log(`Card ${card} of suit ${suit} drawn from deck with ID: ${deck_id}`);
     res.status(HTTP_CODES.SUCCESS.OK).json({ suit, card }).end();
-});
+}); */
 
-server.post("/skill-tree", createSkillTree);
-server.patch("/skill-tree/:skillName", updateSkill);
-server.get("/skill-tree", getSkillTree);
-server.delete("/skill-tree/:skillName", deleteSkill);
-
-server.listen(server.get('port'), function () {
-    console.log('server running', server.get('port'));
-});
