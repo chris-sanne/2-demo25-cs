@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
-import HTTP_CODES from "../../utils/httpCodes.mjs";
-/* import { skillTree } from "../js/skillTree.mjs"; */
+import HTTP_CODES from "../utils/httpCodes.mjs";
 
 const skillTree = {
   name: "Swiftcast",

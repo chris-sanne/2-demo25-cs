@@ -1,7 +1,7 @@
 import express from 'express'
 import HTTP_CODES from './utils/httpCodes.mjs';
 import fs from "node:fs/promises";
-import { createSkillTree, updateSkill, getSkillTree, deleteSkill } from "./public/js/skillTreeManager.mjs";
+import { createSkillTree, updateSkill, getSkillTree, deleteSkill } from "./public/skillTreeManager.mjs";
 
 const server = express();
 const port = (process.env.PORT || 8000);
