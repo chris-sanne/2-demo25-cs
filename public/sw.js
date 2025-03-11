@@ -1,7 +1,6 @@
 const cacheID = "skillTreeV1";
 const contentToCache = [
-    "/",
-    "/skillTree.html",
+    "/index.html",
     "/skillTree.mjs",
     "/icons/skillTree.png",
     "/icons/skillTreeLarge.png",
