@@ -184,6 +184,10 @@ button:active {
     padding: 10px;
 }
 
+#skillTreeElement span {
+    white-space: nowrap;
+}
+
 .skillBox {
     padding: 4px 8px;
     border: 1.5px solid #333;
