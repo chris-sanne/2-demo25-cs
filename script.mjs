@@ -5,6 +5,7 @@ import { createSkillTree, updateSkill, getSkillTree, deleteSkill } from "./publi
 
 const server = express();
 const port = (process.env.PORT || 8000);
+const settingsFile = "./settings/settings.json";
 
 server.set('port', port);
 server.use(express.static('public'));
@@ -17,23 +18,9 @@ server.delete("/api/skill-tree/:skillName", deleteSkill);
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
 });
-/* const cardDeck = {
-    "Clubs": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
-    "Diamonds": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
-    "Hearts": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
-    "Spades": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
-}
 
-const decks = {};
-const settingsFile = "./settings/settings.json"; */
-
-
-/* server.get("/", (req, res, next) => {
-    res.redirect("/skill-tree");
-}); */
-
-
-/* server.get("/settings", async (req, res, next) => {
+// Server calls for saving/loading dark/light mode middleware
+ server.get("/settings", async (req, res, next) => {
     try {
         const data = await fs.readFile(settingsFile);
         res.json(JSON.parse(data));
@@ -55,7 +42,20 @@ server.post("/settings", express.json(), async (req, res, next) => {
     }
 });
 
-function generateDeckId() {
+/* server.get("/", (req, res, next) => {
+    res.redirect("/skill-tree");
+}); */
+
+/* const cardDeck = {
+    "Clubs": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
+    "Diamonds": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
+    "Hearts": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
+    "Spades": ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"],
+}
+
+const decks = {}; */
+
+/* function generateDeckId() {
     let deck_id = "";
     const chars = "abcdefghijklmnopqrstuvwxyz"
 
