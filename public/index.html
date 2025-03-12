@@ -5,19 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skill Tree Test</title>
     <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Borderlands 2-esque skill tree</h1>
-    <button id="btnNewSkillTree">Generate skill tree</button>
-    <button id="btnGetSkillTree">Get skill tree</button>
+    <div id="allContentWrapper">
+        <h1>Borderlands 2-esque skill tree</h1>
+        <div class="skillTreeBtnWrapper">
+            <button id="btnNewSkillTree">Generate skill tree</button>
+            <button id="btnGetSkillTree">Get skill tree</button>
+        </div>
 
-    <form id="inputForm">
-        <input type="text" id="inputSkillName" name="query" placeholder="Enter skill name..." required />
-        <button type="button" id="btnUnlockSkill">Unlock this skill</button>
-        <button type="button" id="btnDeleteSkill">Delete this skill</button>
-    </form>
+        <form id="inputForm">
+            <input type="text" id="inputSkillName" name="query" placeholder="Enter skill name..." required />
+            <div class="skillTreeBtnWrapper">
+                <button type="button" id="btnUnlockSkill">Unlock this skill</button>
+                <button type="button" id="btnDeleteSkill">Delete this skill</button>
+            </div>
+        </form>
 
-    <ul id="skillTreeElement"></ul>
+        <ul id="skillTreeElement"></ul>
+    </div>
+    
     <script type="module" src="skillTree.mjs" defer></script>
 </body>
 </html>
