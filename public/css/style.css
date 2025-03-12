@@ -157,9 +157,35 @@ button:active {
     gap: 15px;
 }
 
-#skillTreeElement {
+/* #skillTreeElement {
     padding: 10px 20px;
     border: 2px, dashed #333;
+} */
+
+#skillTreeElement {
+    list-style: none;
+    padding: 0;
+}
+
+#skillTreeElement ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+    justify-content: center;
+    gap: 5px;
+    padding: 20px 0;
+    list-style: none;
+}
+
+#skillTreeElement li {
+    text-align: center;
+    padding: 10px;
+}
+
+.skillBox {
+    padding: 4px 8px;
+    border: 1.5px solid #333;
+    border-radius: 8px;
+    text-align: center;
 }
 
 #cardOutput {

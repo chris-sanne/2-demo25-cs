@@ -13,8 +13,13 @@ const skillTreeElement = document.getElementById("skillTreeElement");
 
 function showSkillTree(skill, parentElement) {
   const listItem = document.createElement("li");
-  listItem.innerText = skill.name + (skill.unlocked ? " ✅ " : " ❌ ");
-  listItem.id = skill.name.replaceAll(" ", "-");
+  const skillNameSpan = document.createElement("span");
+
+  skillNameSpan.innerText = skill.name + (skill.unlocked ? " ✅ " : " ❌ ");
+  skillNameSpan.id = skill.name.replaceAll(" ", "-");
+  skillNameSpan.classList.add("skillBox");
+  
+  listItem.appendChild(skillNameSpan);
   parentElement.appendChild(listItem);
   
   if (skill.subskills.length > 0) {
