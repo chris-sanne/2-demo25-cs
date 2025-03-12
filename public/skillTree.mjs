@@ -1,9 +1,12 @@
 "use strict";
 
+import { toggleTheme, startup } from "./themeManager.mjs"; 
+
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js");
 }
 
+const btnToggleTheme = document.getElementById("btnToggleTheme");
 const btnNewSkillTree = document.getElementById("btnNewSkillTree");
 const btnGetSkillTree = document.getElementById("btnGetSkillTree");
 const inputSkillName = document.getElementById("inputSkillName");
@@ -29,6 +32,9 @@ function showSkillTree(skill, parentElement) {
   }
 }
 
+btnToggleTheme.addEventListener("click", toggleTheme);
+startup();
+
 btnNewSkillTree.addEventListener("click", async () => {
   const response = await fetch("/", { method: "POST" });
   const data = await response.json();
@@ -50,7 +56,7 @@ btnGetSkillTree.addEventListener("click", async () => {
 });
 
 btnUnlockSkill.addEventListener("click", async () => {
-  const skillName = inputSkillName.value;
+  const skillName = inputSkillName.value.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
   const response = await fetch(`/api/skill-tree/${skillName}`, { method: "PATCH" });
   try {
     const data = await response.json();
@@ -65,7 +71,7 @@ btnUnlockSkill.addEventListener("click", async () => {
 });
 
 btnDeleteSkill.addEventListener("click", async () => {
-  const skillName = inputSkillName.value;
+  const skillName = inputSkillName.value.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
   const response = await fetch(`/api/skill-tree/${skillName}`, { method: "DELETE" });
   try {
     const data = await response.json();
