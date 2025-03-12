@@ -65,11 +65,11 @@ body {
     padding: 10px;
 }
 
-#btnNewDeck {
+#btnNewDeck, #btnNewSkillTree {
     background-color: #a1e5a2;
 }
 
-#btnNewDeck:hover {
+#btnNewDeck:hover, #btnNewSkillTree:hover {
     background-color: #9ad29b;
 }
 
@@ -81,20 +81,28 @@ body {
     background-color: rgb(201, 201, 145);
 }
 
-#btnShowDeck {
+#btnShowDeck, #btnGetSkillTree {
     background-color: rgb(188, 216, 242);
 }
 
-#btnShowDeck:hover {
+#btnShowDeck:hover, #btnGetSkillTree:hover {
     background-color: rgb(169, 196, 222);
 }
 
-#btnDrawCard {
+#btnDrawCard, #btnUnlockSkill {
     background-color: #d9c1e5;
 }
 
-#btnDrawCard:hover {
+#btnDrawCard:hover, #btnUnlockSkill:hover {
     background-color: #cab3d6;
+}
+
+#btnDeleteSkill {
+    background-color: #f08078;
+}
+
+#btnDeleteSkill:hover {
+    background-color: #da6d6b;
 }
 
 button {
@@ -156,11 +164,6 @@ button:active {
     margin: 5px 0px;
     gap: 15px;
 }
-
-/* #skillTreeElement {
-    padding: 10px 20px;
-    border: 2px, dashed #333;
-} */
 
 #skillTreeElement {
     list-style: none;
