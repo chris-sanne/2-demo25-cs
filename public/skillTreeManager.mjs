@@ -26,7 +26,7 @@ const skillTree = {
       unlocked: false,
       subskills: [
         {
-          name: "Cure II",
+          name: "Cure 2",
           unlocked: false,
           subskills: []
         },
