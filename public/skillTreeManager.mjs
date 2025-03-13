@@ -3,19 +3,23 @@ import HTTP_CODES from "../utils/httpCodes.mjs";
 
 const skillTree = {
   name: "Swiftcast",
+  description: "Reduces spell cast time and recast time by 20% for 15s.",
   unlocked: true,
   subskills: [
     {
       name: "Fireball",
+      description: "Deals fire damage with 280 potency.",
       unlocked: false,
       subskills: [
         {
           name: "Greater Fireball",
+          description: "Deals fire damage with 320 potency.",
           unlocked: false,
           subskills: []
         },
         {
           name: "Firestorm",
+          description: "Deals fire damage over time with 100 potency for 45s.",
           unlocked: false,
           subskills: []
         }
@@ -23,15 +27,18 @@ const skillTree = {
     },
     {
       name: "Cure",
+      description: "Restore HP with 500 potency.",
       unlocked: false,
       subskills: [
         {
           name: "Cure 2",
+          description: "Restore HP with 800 potency.",
           unlocked: false,
           subskills: []
         },
         {
           name: "Regen",
+          description: "Grants healing over time with 250 potency for 18s.",
           unlocked: false,
           subskills: []
         }
