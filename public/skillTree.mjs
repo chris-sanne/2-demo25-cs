@@ -14,6 +14,27 @@ const btnUnlockSkill = document.getElementById("btnUnlockSkill");
 const btnDeleteSkill = document.getElementById("btnDeleteSkill");
 const skillTreeElement = document.getElementById("skillTreeElement");
 
+function buildNestedTree(skills) {
+  const skillMap = new Map();
+  skills.forEach(skill => skillMap.set(skill.name, { ...skill, subskills: [] }));
+
+  const rootSkills = [];
+  skills.forEach(skill => {
+    if (skill.subskills) {
+      const subskillNames = skill.subskills.split(",").map(name => name.trim());
+      subskillNames.forEach(subName => {
+        if (skillMap.has(subName)) {
+          skillMap.get(skill.name).subskills.push(skillMap.get(subName));
+        }
+      });
+    }
+    if (!skills.some(s => s.subskills.includes(skill.name))) {
+      rootSkills.push(skillMap.get(skill.name));
+    }
+  });
+  return rootSkills;
+}
+
 function showSkillTree(skill, parentElement) {
   const listItem = document.createElement("li");
   const skillNameSpan = document.createElement("span");
@@ -49,7 +70,8 @@ btnGetSkillTree.addEventListener("click", async () => {
     console.log("My skill tree requested from the server.");
     console.log(data);
     skillTreeElement.innerHTML = "";
-    showSkillTree(data, skillTreeElement);
+    const nestedTree = buildNestedTree(data);
+    nestedTree.forEach(skill => showSkillTree(skill, skillTreeElement));
   } catch (error) {
     console.error("Error parsing JSON:", error)
   }
@@ -64,7 +86,8 @@ btnUnlockSkill.addEventListener("click", async () => {
     const skillTreeResponse = await fetch("/api/skill-tree", { method: "GET" });
     const skillTreeData = await skillTreeResponse.json();
     skillTreeElement.innerHTML = "";
-    showSkillTree(skillTreeData, skillTreeElement);
+    const nestedTree = buildNestedTree(skillTreeData);
+    nestedTree.forEach(skill => showSkillTree(skill, skillTreeElement));
   } catch (error) {
     console.error("Error updating skill", error);
   }
@@ -79,7 +102,8 @@ btnDeleteSkill.addEventListener("click", async () => {
     const skillTreeResponse = await fetch("/api/skill-tree", { method: "GET" });
     const skillTreeData = await skillTreeResponse.json();
     skillTreeElement.innerHTML = "";
-    showSkillTree(skillTreeData, skillTreeElement);
+    const nestedTree = buildNestedTree(skillTreeData);
+    nestedTree.forEach(skill => showSkillTree(skill, skillTreeElement));
   } catch (error) {
     console.error("Error updating skill", error);
   }
