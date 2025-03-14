@@ -1,5 +1,14 @@
-import fs from "node:fs/promises";
+import pg from "pg";
 import HTTP_CODES from "../utils/httpCodes.mjs";
+
+const { Client } = pg;
+
+const config = {
+    connectionString: process.env.DB_CREDENTIALS,
+    ssl: process.env.DB_SSL === "true" ? process.env.DB_SSL : { "rejectUnauthorized": false }
+};
+
+const client = new Client(config);
 
 const skillTree = {
   name: "Swiftcast",
@@ -47,68 +56,141 @@ const skillTree = {
   ]
 };
 
-let activeSkillTree = JSON.parse(JSON.stringify(skillTree));
+async function createTable() {
+  try {
+      await client.connect();
+      console.log("Successfully connected to the database!");
+      const result = await client.query(`
+          SELECT EXISTS (
+              SELECT 1 
+              FROM information_schema.tables 
+              WHERE table_schema = 'public' 
+              AND table_name = 'skills'
+          );
+      `);
 
-export function createSkillTree(req, res, next) {
-    activeSkillTree = JSON.parse(JSON.stringify(skillTree));
-    console.log("New skill tree generated:");
-    console.log(activeSkillTree);
-    res.status(HTTP_CODES.SUCCESS.OK).json(activeSkillTree).end();
+      if (!result.rows[0].exists) {
+          console.log("skills table doesn't exist. Creating...");
+          await client.query(`
+              CREATE TABLE "public"."skills" (
+                  "id" integer GENERATED ALWAYS AS IDENTITY,
+                  "name" TEXT NOT NULL,
+                  "description" TEXT,
+                  "unlocked" BOOLEAN DEFAULT FALSE,
+                  "subskills" TEXT,
+                  PRIMARY KEY ("id")
+              );
+          `);
+          console.log("skills table created successfully.");
+      } else {
+          console.log("skills table already exists.");
+      }
+  } catch (error) {
+      console.error("Error creating table:", error);
+  }
 }
 
-export function getSkillTree(req, res, next) {
-    console.log("My skill tree: ", activeSkillTree);
-    res.status(HTTP_CODES.SUCCESS.OK).json(activeSkillTree).end();
+async function logTableContents() {
+  try {
+      const result = await client.query('SELECT * FROM "skills";');
+      console.log("skills table contents:", result.rows);
+  } catch (err) {
+      console.error("Error fetching skills table contents:", err);
+  }
 }
 
-function findSkill(skillName) {
-    const stack = [...activeSkillTree.subskills];
+async function listTables() {
+  try {
+      const result = await client.query(`
+          SELECT table_name 
+          FROM information_schema.tables 
+          WHERE table_schema = 'public';
+      `);
+      console.log("Tables in the database:", result.rows);
+  } catch (err) {
+      console.error("Error fetching tables:", err);
+  }
+}
 
-    while (stack.length > 0) {
-        const skill = stack.pop();
-        if (skill.name === skillName) {
-            return skill;
+async function main() {
+  await createTable();
+  await logTableContents();
+  await listTables();
+}
+
+main();
+
+export async function createSkillTree(req, res, next) {
+  try {
+    await client.query('DELETE FROM "skills"');
+    async function insertSkill(skill, parentName = null) {
+        const result = await client.query(
+            `INSERT INTO skills (name, description, unlocked, subskills) 
+             VALUES ($1, $2, $3, $4) RETURNING *`,
+            [
+                skill.name,
+                skill.description,
+                skill.unlocked,
+                skill.subskills.map(sub => sub.name).join(",")
+            ]
+        );
+        console.log(`Inserted skill: ${skill.name}`);
+        for (const subskill of skill.subskills) {
+            await insertSkill(subskill, skill.name);
         }
-        stack.push(...skill.subskills);
+    }
+    await insertSkill(skillTree);
+    console.log("Skill tree populated successfully.");
+
+  } catch (error) {
+    console.log("Database connection failed:", error);
+    res.status(HTTP_CODES.SERVER_ERROR.INTERNAL_SERVER_ERROR).json({ error: "Failed to populate skill tree" });
+  }
+}
+
+export async function getSkillTree(req, res, next) {
+    try {
+        const result = await client.query("SELECT * FROM skills");
+        console.log("skills table contents:", result.rows);
+        res.status(HTTP_CODES.SUCCESS.OK).json(result.rows);
+    } catch (error) {
+        console.error("Error fetching skill tree:", error);
+        res.status(HTTP_CODES.SERVER_ERROR.INTERNAL_SERVER_ERROR).json({ error: "Failed to fetch skill tree" });
     }
 }
 
-export function updateSkill(req, res, next) {
+export async function updateSkill(req, res, next) {
     const skillName = req.params.skillName;
-    const skill = findSkill(skillName);
-    
-    if (skill) {
-        skill.unlocked = !skill.unlocked;
-        res.status(HTTP_CODES.SUCCESS.OK).json(`${skill.name} unlocked: ${skill.unlocked}`);
-        console.log(`${skillName} unlocked: ${skill.unlocked}`);
-        console.log(activeSkillTree);
-    } else {
-        res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).json(`Skill '${skillName}' not found, check spelling`);
+
+    try {
+        const skill = await client.query("SELECT unlocked FROM skills WHERE name = $1", [skillName]);
+
+        if (skill.rows.length === 0) {
+            return res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).json({ error: `Skill '${skillName}' not found` });
+        }
+
+        const newUnlockedState = !skill.rows[0].unlocked;
+        await client.query("UPDATE skills SET unlocked = $1 WHERE name = $2", [newUnlockedState, skillName]);
+        res.status(HTTP_CODES.SUCCESS.OK).json(`${skillName} unlocked: ${newUnlockedState}`);
+    } catch (error) {
+        console.error("Error updating skill:", error);
+        res.status(HTTP_CODES.SERVER_ERROR.INTERNAL_SERVER_ERROR).json({ error: "Failed to update skill" });
     }
 }
 
-export function deleteSkill(req, res, next) {
+export async function deleteSkill(req, res, next) {
     const skillName = req.params.skillName;
-    const skillsArray = [];
-    skillsArray.push(activeSkillTree);
 
-    function skillNameMatcher(subskill) {
-        if (subskill.name === skillName) {
-            return true;
-        } else {
-            return false;
+    try {
+        const result = await client.query("DELETE FROM skills WHERE name = $1 RETURNING *", [skillName]);
+
+        if (result.rowCount === 0) {
+            return res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).json({ error: `Skill '${skillName}' not found` });
         }
-    }
 
-    while (skillsArray.length > 0) {
-        const skill = skillsArray.pop();
-        const index = skill.subskills.findIndex(skillNameMatcher);
-
-        if (index !== -1) {
-            skill.subskills.splice(index, 1);
-            return res.status(HTTP_CODES.SUCCESS.OK).json(`Deleted skill: ${skillName}`);
-        }
-        skillsArray.push(...skill.subskills);
+        res.status(HTTP_CODES.SUCCESS.OK).json(`Deleted skill: ${skillName}`);
+    } catch (error) {
+        console.error("Error deleting skill:", error);
+        res.status(HTTP_CODES.SERVER_ERROR.INTERNAL_SERVER_ERROR).json({ error: "Failed to delete skill" });
     }
-    return res.status(HTTP_CODES.CLIENT_ERROR.NOT_FOUND).json(`Skill: '${skillName}' not found, check spelling`);
 }
