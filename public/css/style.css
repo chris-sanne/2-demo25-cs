@@ -59,41 +59,27 @@ body {
     margin: 5px 0px;
 }
 
-#newDeckWrapper {
-    display: flex;
-    gap: 10px;
-    padding: 10px;
-}
-
-#btnNewDeck, #btnNewSkillTree {
+#btnNewSkillTree {
     background-color: #a1e5a2;
 }
 
-#btnNewDeck:hover, #btnNewSkillTree:hover {
+#btnNewSkillTree:hover {
     background-color: #9ad29b;
 }
 
-#btnShuffleDeck {
-    background-color: rgb(219, 219, 156);
-}
-
-#btnShuffleDeck:hover {
-    background-color: rgb(201, 201, 145);
-}
-
-#btnShowDeck, #btnGetSkillTree {
+#btnGetSkillTree {
     background-color: rgb(188, 216, 242);
 }
 
-#btnShowDeck:hover, #btnGetSkillTree:hover {
+#btnGetSkillTree:hover {
     background-color: rgb(169, 196, 222);
 }
 
-#btnDrawCard, #btnUnlockSkill {
+#btnUnlockSkill {
     background-color: #d9c1e5;
 }
 
-#btnDrawCard:hover, #btnUnlockSkill:hover {
+#btnUnlockSkill:hover {
     background-color: #cab3d6;
 }
 
@@ -120,38 +106,6 @@ button:hover {
 
 button:active {
     transform: scale(0.98);
-}
-
-#messageBox {
-    border: 1px solid #ccc;
-    padding: 9px;
-    margin: 5px 0;
-    border-radius: 5px;
-    color: #333;
-    display: none;
-    white-space: nowrap;
-    align-content: center;
-}
-
-#messageBox.success {
-    border-color: #4dab50;
-    background-color: #dff0d8;
-    color: #376a38;
-}
-
-#messageBox.error {
-    border-color: #f44336;
-    background-color: #fddddd;
-    color: #a94442;
-}
-
-.hidden {
-    display: none;
-}
-
-#inputSearch {
-    padding: 5px 10px;
-    display: block;
 }
 
 #inputSkillName {
@@ -193,9 +147,4 @@ button:active {
     border: 1.5px solid #333;
     border-radius: 8px;
     text-align: center;
-}
-
-#cardOutput {
-    border-radius: 1px;
-    padding: 10px;
 }
